@@ -1,15 +1,10 @@
 import React from "react"
 import CardView from "./CardView.jsx";
 
+
+
+
 export default function Card(props) {
-    let badgeText
-    if (props.openSpots === 0) {
-        badgeText = "SOLD OUT"
-    } else if (props.location === "Online") {
-        badgeText = "ONLINE"
-    }
-
-
 
     const [data, setData] = React.useState([])
     const [isShow, setIsShow] = React.useState(false)
@@ -24,37 +19,31 @@ export default function Card(props) {
             .then((data) => setData(data));
     }, [props.properties.xid])
 
-    console.log(data)
+    function separateString() {
+        const categories = props.properties.kinds.split(',')
+        return categories.map((item) => <h3 className="category">{item}</h3>)
+    }
 
-    // console.log(props.name)
     return (
         <div className="card">
-            <CardView isShow={isShow} handler={handlerIsShow} data={data}/>
-            {badgeText && <div className="card--badge">{badgeText}</div>}
-            <img src={`https://api.opentripmap.com/0.1/en/places/xid/W422141443?apikey=5ae2e3f221c38a28845f05b6f5a6dc7747c993a6f20028b8b8e69b9a`} className="card--image"  alt=""/>
-            {/*<div className="card--body">*/}
-            {/*    <div className="row">*/}
-            {/*        <div className="card--stats">*/}
-            {/*            <img src="https://cdn-icons-png.flaticon.com/24/1828/1828884.png" alt="" className="card--star"/>*/}
-            {/*            <span>{props.stats.rating}</span>*/}
-            {/*            <span className="gray">({props.stats.reviewCount})</span>*/}
-            {/*            <span className="gray">{props.location}</span>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            <div className="card--body">
-                <p>{props.properties.name}</p>
-                <p>{props.type}</p>
+                <CardView isShow={isShow} handler={handlerIsShow} data={data}/>
+                <div className="card--body">
+                    <h3 className="card--title">{props.properties.name}</h3>
 
-                <button onClick={()=>{
-                    memo()
-                    handlerIsShow()
-                }
-                }>Get</button>
-                <p><span className="bold">ID: {props.properties.xid}</span></p>
-            </div>
+                    <div className="card-button-container">
+                        <button className="card--button" onClick={()=>{
+                            memo()
+                            handlerIsShow()
+                        }
+                        }>Read more</button>
+                        {props.properties?.osm !== undefined ? <a href={`https://www.openstreetmap.org/${props.properties?.osm}`}><img src="https://cdn-icons-png.flaticon.com/32/592/592245.png" alt=""/></a> : null}
+                    </div>
 
-            {/*</div>*/}
-
+                    <div className="categories-container">
+                        {separateString()}
+                    </div>
+                    {/*<p><span className="bold">ID: {props.properties.xid}</span></p>*/}
+                </div>
         </div>
     )
 }
